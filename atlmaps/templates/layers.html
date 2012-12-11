@@ -1,0 +1,10 @@
+%{% extends 'base.html' %}
+
+{% block content %}
+  <ul>
+    {% for layer in object_list %}
+        <li><a href="/layer/{{ layer.id }}">{{ layer.title }}</a></li>
+    {%  endfor %}
+  </ul>
+
+{% endblock %}

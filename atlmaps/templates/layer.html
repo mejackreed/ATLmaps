@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{%  block title %}{{ layer.title }} {% endblock title %}
+  {% block extra_head %}
+
+
+
+    <script type="text/javascript">
+
+        var map, tiled1, tiled2, tiled3, tiled4, format = 'image/png';
+      var gmap = new OpenLayers.Layer.Google("Google Satellite", {
+      type : google.maps.MapTypeId.SATELLITE,
+      numZoomLevels : 25
+      });
+
+      var maxOpacity = 0.9;
+      var minOpacity = 0.1;
+
+      function init() {
+      var atlanta = new OpenLayers.LonLat(-9393381.0503354, 3995908.9838295);
+
+
+          OpenLayers.ImgPath = "http://atlmaps.com/historicdowntown/images/dark/";
+          options = {
+              controls : [new OpenLayers.Control.Navigation(), new OpenLayers.Control.ArgParser(), new OpenLayers.Control.Attribution(), new OpenLayers.Control.PanZoom()]
+
+          };
+          map = new OpenLayers.Map('map', options);
+          map.addLayer(gmap);
+          gmap.mapObject.setTilt(0);
+
+          function createLayer(name, layer, opacity) {
+              return (new OpenLayers.Layer.WMS(name, "http://www.atlmaps.com:8080/geoserver/atlmaps/wms", {
+                  LAYERS : layer,
+                  format : format,
+                  TRANSPARENT : true
+              }, {
+                  buffer : 0,
+                  displayOutsideMaxExtent : true,
+                  isBaseLayer : false,
+                  srs : 'EPSG:900913',
+                  opacity : opacity,
+                  transitionEffect : 'resize'
+              }));
+          }
+
+           tiled1 = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0.6);
+
+          map.addLayer(tiled1);
+
+          map.setCenter(atlanta, 16);
+
+      }
+    </script>
+
+  {% endblock extra_head %}
+
+{%  block content %}
+
+    <div id="sidebar" class="span2">
+      <h2>{{ layer.title }}</h2>
+      <p>{{ layer.description }}</p>
+    </div>
+
+    <div id="map_container" class="span10">
+      <div id="map" class="olMap"></div>
+    </div>
+
+{% endblock content %}

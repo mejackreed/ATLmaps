@@ -1,0 +1,42 @@
+#content {
+    margin-top: 50px;
+}
+
+
+#map_container {
+    position: fixed;
+    left: 332px;
+    width:100%;
+    height: 800px;
+}
+#map {
+    height:100%;
+    max-width:100%;
+    margin-left:auto;
+    margin-right:auto;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    border: 0;
+}
+.pageheader{
+    width:310px;
+}
+
+
+#controls-bg {
+    background-color: #FFFFFF;
+    z-index: 1000;
+}
+
+div.olLayerGooglePoweredBy {
+    display: none !important;
+}
+
+.slider{
+    width:150px;
+}
+.legendbox{
+    width:20px;
+}
+img { max-width: none; }
