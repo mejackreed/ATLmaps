@@ -14,10 +14,11 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/atlmaps.js"></script>
     {% block extra_head %}{% endblock %}
 </head>
 <body onload=init()>
-<div class="container-fluid">
+<div class="container-fluid" id="content-container">
     <div class="row span12">
 
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -28,7 +29,7 @@
                         <li {% ifequal request.path "/" %} class="active" {% endifequal %}><a href="/">Home</a></li>
                         <li {% ifequal request.path "/layers/" %} class="active" {% endifequal %}><a rel="nofollow" href="/layers/">Overlays</a></li>
                         <li {% ifequal request.path "/maps/" %} class="active" {% endifequal %}><a href="/maps/">User Created Maps</a></li>
-                        <li {% ifequal request.path "/maps/add/" %} class="active" {% endifequal %}><a href="/maps/add/">New Map</a></li>
+                        <li {% ifequal request.path "/map/add/" %} class="active" {% endifequal %}><a href="/map/add/">New Map</a></li>
                         <li {% ifequal request.path "/about/" %} class="active" {% endifequal %}><a href="/about">About</a></li>
                     </ul>
                     <ul class="secondary-nav">
@@ -57,15 +58,12 @@
 
         <footer id="footer" class="row">
             <div class="container">
-                <ul>
-                    <li>1</li>
-                    <li>2</li>
-                </ul>
+
             </div>
         </footer>
 
     </div>
-</div>
+
 
 </body>
 </html>

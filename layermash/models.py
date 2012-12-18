@@ -1,7 +1,7 @@
 from django.db import models
+from django import forms
 from owslib.wms import WebMapService
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+
 
 class wmsEndpoint(models.Model):
     name = models.CharField(max_length=50)
@@ -47,13 +47,11 @@ class Map(models.Model):
     def __unicode__(self):
         return self.title
 
-#@receiver(post_save, sender=Layer)
-def _get_wms_data(sender, instance=False, **kwargs ):
-    layer= Layer.objects.get(pk=instance.id)
-    wms = WebMapService(layer.wms_url.url)
-    wms_layer  = wms[layer.wms_layer_name]
-    layer.title = wms_layer.title
-    layer.description = wms_layer.abstract
-    layer.icon = wms_layer.styles['raster']['legend']
-    layer.bounds = wms_layer.boundingBox
-    layer.save()
+class MapForm(forms.ModelForm):
+    class Meta:
+        model = Map
+        fields =('title', 'description','center_lat','center_lng', 'layers')
+        widgets = {'center_lat' : forms.HiddenInput ,
+                   'center_lng' : forms.HiddenInput,
+                   'layers'     : forms.MultipleHiddenInput,
+                   }

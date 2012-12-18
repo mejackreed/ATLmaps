@@ -27,23 +27,6 @@
                 }
             });
 
-            function turnOnLayer(layer, slider, trans) {
-                map.addLayer(layer);
-                if ($(slider).slider("value") == 0) {
-                    $(slider).slider("option", "value", 60);
-                }
-                layer.setOpacity($(slider).slider("value") / 100);
-                $(trans).html($(slider).slider("value") + "%");
-            }
-
-            function turnOffLayer(layer, slider, trans) {
-                map.removeLayer(layer);
-                $(slider).slider("option", "value", 0);
-                layer.setOpacity(0 / 100);
-                $(trans).html($(slider).slider("value") + "%");
-            }
-
-
             $("[rel=tooltip]").tooltip();
             $("[rel=popover]").popover();
 
@@ -61,13 +44,6 @@
         var map, tiled1, tiled2, tiled3, tiled4, format = 'image/png';
         var maxOpacity = 0.9;
         var minOpacity = 0.1;
-        function changeOpacity(byOpacity) {
-            var newOpacity = (parseFloat(OpenLayers.Util.getElement('opacity').value) + byOpacity).toFixed(1);
-            newOpacity = Math.min(maxOpacity,
-                    Math.max(minOpacity, newOpacity));
-            OpenLayers.Util.getElement('opacity').value = newOpacity;
-            shade.setOpacity(newOpacity);
-        }
 
         var gmap = new OpenLayers.Layer.Google("Google Satellite", {
             type:google.maps.MapTypeId.SATELLITE,
@@ -76,7 +52,6 @@
 
         function init() {
             var atlanta = new OpenLayers.LonLat(-9393381.0503354, 3995908.9838295);
-
 
             OpenLayers.ImgPath = "http://atlmaps.com/historicdowntown/images/dark/";
             options = {
@@ -87,21 +62,6 @@
             map.addLayer(gmap);
             gmap.mapObject.setTilt(0);
 
-            function createLayer(name, layer, opacity) {
-                return (new OpenLayers.Layer.WMS(name, "http://www.atlmaps.com:8080/geoserver/atlmaps/wms", {
-                    LAYERS:layer,
-                    format:format,
-                    TRANSPARENT:true
-                }, {
-                    buffer:0,
-                    displayOutsideMaxExtent:true,
-                    isBaseLayer:false,
-                    srs:'EPSG:900913',
-                    opacity:opacity,
-                    transitionEffect:'resize'
-                }));
-            }
-
             tiled1 = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0.6);
 
             map.addLayer(tiled1);
@@ -110,31 +70,13 @@
 
             handleSlider(tiled1, "#mapslider1", "#trans1", 60);
         }
-
-
-        function handleSlider(layer, slider, trans, initial) {
-            slider = $(slider)
-            slider.slider({
-                range:false,
-                min:0,
-                max:100,
-                value:initial,
-                step:1,
-                slide:function (event, ui) {
-                    $(trans).val = (ui.value);
-                    $(trans).html($(slider).slider("value") + "%");
-                    layer.setOpacity(ui.value / 100);
-                }
-            });
-            $(trans).html($(slider).slider("value") + "%");
-        }
     </script>
 
 {% endblock extra_head %}
 
 {% block content %}
 
-    <div id="sidebar" class="span2">
+    <div id="sidebar" class="span3">
         <h2>{{ layer.title }}</h2>
 
         <p>{{ layer.description }}</p>
@@ -156,7 +98,7 @@
         </div>
     </div>
 
-    <div id="map_container" class="span10">
+    <div id="map_container" class="span9">
         <div id="map" class="olMap"></div>
     </div>
 

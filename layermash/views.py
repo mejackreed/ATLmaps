@@ -1,5 +1,5 @@
 from layermash.models import *
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, HttpResponseRedirect
 from django.template import RequestContext
 
 def layer(request, layer_id):
@@ -16,7 +16,27 @@ def map(request, map_id):
 def add_map(request):
     if request.method == 'GET':
         layers = Layer.objects.all()
-        return render_to_response('add_map.html',{'layers' : layers}, context_instance = RequestContext(request))
+        form = MapForm(initial={})
+        return render_to_response('add_map.html',{'layers' : layers, 'form': form}, context_instance = RequestContext(request))
 
     if request.method == "POST":
-        return
+        form = MapForm(request.POST)
+        if form.is_valid():
+            title       = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            center_lat  = form.cleaned_data['center_lat']
+            center_lng  = form.cleaned_data['center_lng']
+            layers      = form.cleaned_data['layers']
+        else:
+            layers = Layer.objects.all()
+            return render_to_response('add_map.html',{'layers' : layers, 'form': form}, context_instance = RequestContext(request))
+
+        map = Map(title=title, description=description, center_lat=center_lat, center_lng=center_lng)
+        map.save()
+
+        for layer in layers:
+            map.layers.add(layer)
+
+        map.save()
+
+        return HttpResponseRedirect('/map/' + str(map.id))

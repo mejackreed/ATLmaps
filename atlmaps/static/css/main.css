@@ -1,13 +1,15 @@
+html, body, #content-container, #content{
+    height: 100%;
+}
+
 #content {
     margin-top: 50px;
 }
 
 
 #map_container {
-    position: fixed;
-    left: 332px;
-    width:100%;
-    height: 100%;
+    position: relative;
+    height: 95%;
 }
 #map {
     height:100%;
@@ -35,9 +37,12 @@ div.olLayerGooglePoweredBy {
 
 .slider{
     width:150px;
+    margin-top: 9px;
+    margin-left: 15px;
 }
 .legendbox{
     width:20px;
 }
 img { max-width: none; }
 
+.accordion-body{ padding-left: 20px;}
