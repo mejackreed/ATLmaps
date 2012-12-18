@@ -2,6 +2,9 @@ from layermash.models import *
 from django.shortcuts import render, render_to_response, HttpResponseRedirect
 from django.template import RequestContext
 
+def home(request):
+    return render_to_response('home.html', {}, context_instance=RequestContext(request))
+
 def layer(request, layer_id):
   if request.method == 'GET':
     layer = Layer.objects.get(pk=layer_id)
