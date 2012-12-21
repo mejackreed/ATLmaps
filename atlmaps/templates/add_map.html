@@ -3,152 +3,152 @@
 {% block title %} Create A new Map Mashup {% endblock title %}
 {% block extra_head %}
 
+<script type="text/javascript">
+$(document).ready(function () {
+
+	$ref = $(".btn-group");
+	$("body").on('click', $ref.selector + ' .btn', function () {
+	{% for layer in layers %}
+	if ($(this).is('.on, .active')) {
+	if ($(this).parent().is('.layer{{ forloop.counter }}')) {
+		turnOnLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
+	}
+	} else {
+		if ($(this).is('.off, active')) {
+			if ($(this).parent().is('.layer{{ forloop.counter }}')) {
+				turnOffLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
+			}
+		}
+	}
+	{% endfor %}
+	});
+	
+	$(".accordion-body").on('show',function(event){
+	var heading = $(this).prev();
+	$('i.icon-plus-sign', heading).addClass('hide');
+	$('i.icon-minus-sign', heading).removeClass('hide');
+	});
+	$(".accordion-body").on('hide',function(event){
+	var heading = $(this).prev();
+	$('i.icon-plus-sign', heading).removeClass('hide');
+	$('i.icon-minus-sign', heading).addClass('hide');
+	});
+	
+	$(".addMap").on('click', function(event){
+	var layerId = $(this).attr('data');
+	var num =  $('input[name="layers"]').length;
+	$('form#layermash ').append("<input type='hidden' name='layers' value='"+layerId+"' id='id_layers_"+num+"' />");
+	});
+	
+	$('#mashit').on('mousedown', function(){
+	var lat = map.getCenter().lat;
+	var lng = map.getCenter().lon;
+	$("#id_center_lat").attr('value',lat);
+	$("#id_center_lng").attr('value',lng);
+	});
+	
+	//<input type="hidden" name="layers" value="1" id="id_layers_0">
+	//<input type="text" name="center_lat" id="id_center_lat">
+	
+	$("[rel=tooltip]").tooltip();
+	$("[rel=popover]").popover();
+	
+	$('.close-popover').live('click', function (e) {
+		e.preventDefault();
+		$('[rel=popover]').each(function () {
+			$(this).popover('hide');
+		});
+	});
+});
 
 
-    <script type="text/javascript">
-        $(document).ready(function () {
+function init() {
 
-            $ref = $(".btn-group");
-            $("body").on('click', $ref.selector + ' .btn', function () {
-                {% for layer in layers %}
-                if ($(this).is('.on, .active')) {
-                    if ($(this).parent().is('.layer{{ forloop.counter }}')) {
-                        turnOnLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
-                    }
-                } else {
-                    if ($(this).is('.off, active')) {
-                        if ($(this).parent().is('.layer{{ forloop.counter }}')) {
-                            turnOffLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
-                        }
-                    }
-                }
-                {% endfor %}
-            });
+{% for layer in layers %}
+tiled{{ forloop.counter }} = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0);
+map.addLayer(tiled{{ forloop.counter }});
+handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}", 0);
+{% endfor %}
 
-            $(".accordion-body").on('show',function(event){
-                var heading = $(this).prev();
-                $('i.icon-plus-sign', heading).addClass('hide');
-                $('i.icon-minus-sign', heading).removeClass('hide');
-            });
-            $(".accordion-body").on('hide',function(event){
-                var heading = $(this).prev();
-                $('i.icon-plus-sign', heading).removeClass('hide');
-                $('i.icon-minus-sign', heading).addClass('hide');
-            });
+}
 
-            $(".addMap").on('click', function(event){
-                var layerId = $(this).attr('data');
-                var num =  $('input[name="layers"]').length;
-                $('form#layermash ').append("<input type='hidden' name='layers' value='"+layerId+"' id='id_layers_"+num+"' />");
-            });
-
-            $('#mashit').on('mousedown', function(){
-               var lat = map.getCenter().lat;
-               var lng = map.getCenter().lon;
-                 $("#id_center_lat").attr('value',lat);
-                 $("#id_center_lng").attr('value',lng);
-            });
-
-        //<input type="hidden" name="layers" value="1" id="id_layers_0">
-        //<input type="text" name="center_lat" id="id_center_lat">
-
-
-            $("[rel=tooltip]").tooltip();
-            $("[rel=popover]").popover();
-
-            $('.close-popover').live('click', function (e) {
-                e.preventDefault();
-                $('[rel=popover]').each(function () {
-                    $(this).popover('hide');
-                });
-            });
-        });
-
-        var map ='';
-        var format = 'image/png';
-        var maxOpacity = 0.9;
-        var minOpacity = 0.1;
-
-
-
-        var gmap = new OpenLayers.Layer.Google("Google Satellite", {
-            type:google.maps.MapTypeId.SATELLITE,
-            numZoomLevels:25
-        });
-
-
-
-
-        function init() {
-            var atlanta = new OpenLayers.LonLat(-9393381.0503354, 3995908.9838295);
-            OpenLayers.ImgPath = "http://atlmaps.com/historicdowntown/images/dark/";
-            options = {
-                controls:[new OpenLayers.Control.Navigation(), new OpenLayers.Control.ArgParser(), new OpenLayers.Control.Attribution(), new OpenLayers.Control.PanZoom()]
-
-            };
-            map = new OpenLayers.Map('map', options);
-            map.addLayer(gmap);
-            gmap.mapObject.setTilt(0);
-
-            {% for layer in layers %}
-              tiled{{ forloop.counter }} = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0);
-                map.addLayer(tiled{{ forloop.counter }});
-                handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}", 0);
-            {% endfor %}
-
-            map.setCenter(atlanta, 16);
-
-        }
-
-    </script>
+</script>
 
 {% endblock extra_head %}
 
 {% block content %}
 
-    <div id="sidebar" class="span3">
-        <form id="layermash" action="" method="POST">{% csrf_token %}
-            <fieldset>
-                {{ form.as_p }}
-            </fieldset>
-        <input type="submit" value="Save This Map"  id="mashit" class="btn-large" />
-        </form>
+<div id="sidebar" class="">
+	<form id="layermash" action="" method="POST">
+		{% csrf_token %}
+		<fieldset>
+			{{ form.as_p }}
+		</fieldset>
+		<input type="submit" value="Save This Map"  id="mashit" class="btn-large" />
+	</form>
 
+	<div class="accordion-group" id="#accordion1">
+		{% for layer in layers %}
+		<div class="accordion-heading">
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse{{ forloop.counter }}"> <i class="icon-plus-sign"></i> <i class="icon-minus-sign hide"></i> {{ layer.title }} </a></h4>
+		</div>
 
-        <div class="accordion-group" id="#accordion1">
-        {% for layer in layers %}
-        <div class="accordion-heading">
-            <h4>
+		<div id="collapse{{ forloop.counter }}" class="accordion-body collapse">
+			<div class="pull-left">
+				<span class="btn-group layer{{ forloop.counter }}" data-toggle="buttons-radio">
+					<button type="button" class="btn btn-small on active">
+						On
+					</button>
+					<button type="button" class="btn btn-small off">
+						Off
+					</button> </span>
+			</div>
+			<div id='mapslider{{ forloop.counter }}' class='slider pull-left'></div>
+			<div id="trans{{ forloop.counter }}" class="pull-left"></div>
+			<div class="pull-right">
+				<button class="addMap btn-small" data="{{ layer.id }}">
+					Add to my map
+				</button>
+			</div>
+			<p>
+				{{ layer.description }}
+			</p>
+		</div>
 
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse{{ forloop.counter }}">
-                    <i class="icon-plus-sign"></i> <i class="icon-minus-sign hide"></i> {{ layer.title }}
-                </a>
-            </h4>
-        </div>
+		{% endfor %}
+	</div>
+</div>
 
-          <div id="collapse{{ forloop.counter }}" class="accordion-body collapse">
-            <div class="pull-left">
-                <span class="btn-group layer{{ forloop.counter }}" data-toggle="buttons-radio">
-                    <button type="button" class="btn btn-small on active">
-                        On
-                    </button>
-                    <button type="button" class="btn btn-small off">
-                         Off
-                    </button>
-                </span>
-            </div>
-          <div id='mapslider{{ forloop.counter }}' class='slider pull-left'></div>
-          <div id="trans{{ forloop.counter }}" class="pull-left"></div>
-          <div class="pull-right"><button class="addMap btn-small" data="{{ layer.id }}">Add to my map</button></div>
-          <p>{{ layer.description }}</p>
-        </div>
+<div id="map" class=""></div>
+<script type="text/javascript">
+	var atlanta = [33.755, -84.39];
 
-    {% endfor %}
-        </div>
-    </div>
+	map = L.map('map').setView(atlanta, 15);
+	var ggl = new L.Google();
+	map.addLayer(ggl);
 
-    <div id="map_container" class="span9">
-        <div id="map" class="olMap"></div>
-    </div>
+	$(document).ready(function() {
+		var h = $(window).height(), offsetTop = 40;
+		var w = $(window).width(), offsetLeft = 410;
+		$('#map').css('height', (h - offsetTop));
+		$('#sidebar').css('height', (h - offsetTop));
+		$('#map').css('width', (w - offsetLeft));
+		$('#map').css('left', offsetLeft);
+		$('#map').css('bottom', 0)
+		map.invalidateSize(false)
+	});
+
+	$(window).resize(function() {
+		var h = $(window).height(), offsetTop = 40;
+		var w = $(window).width(), offsetLeft = 410;
+		$('#map').css('height', (h - offsetTop));
+		$('#sidebar').css('height', (h - offsetTop));
+		$('#map').css('width', (w - offsetLeft));
+		$('#map').css('left', offsetLeft);
+		$('#map').css('bottom', 0)
+		map.invalidateSize(false)
+	}).resize();
+
+</script>
 
 {% endblock content %}

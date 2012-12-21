@@ -3,103 +3,112 @@
 {% block title %}{{ layer.title }} {% endblock title %}
 {% block extra_head %}
 
+<script type="text/javascript">
+	$(document).ready(function() {
 
+		$ref = $(".btn-group");
+		$("body").on('click', $ref.selector + ' .btn', function() {
+			if ($(this).is('.on, .active')) {
 
-    <script type="text/javascript">
-        $(document).ready(function () {
+				if ($(this).parent().is('.layer1')) {
+					turnOnLayer(tiled1, "#mapslider1", "#trans1")
+				}
 
-            $ref = $(".btn-group");
-            $("body").on('click', $ref.selector + ' .btn', function () {
-                if ($(this).is('.on, .active')) {
+			} else {
+				if ($(this).is('.off, active')) {
+					if ($(this).parent().is('.layer1')) {
+						turnOffLayer(tiled1, "#mapslider1", "#trans1")
+					}
 
-                    if ($(this).parent().is('.layer1')) {
-                        turnOnLayer(tiled1, "#mapslider1", "#trans1")
-                    }
+				}
+			}
+		});
 
-                } else {
-                    if ($(this).is('.off, active')) {
-                        if ($(this).parent().is('.layer1')) {
-                            turnOffLayer(tiled1, "#mapslider1", "#trans1")
-                        }
+		$("[rel=tooltip]").tooltip();
+		$("[rel=popover]").popover();
 
+		$('.close-popover').live('click', function(e) {
+			e.preventDefault();
 
-                    }
-                }
-            });
+			$('[rel=popover]').each(function() {
+				$(this).popover('hide');
+			});
+		});
 
-            $("[rel=tooltip]").tooltip();
-            $("[rel=popover]").popover();
+	});
 
-            $('.close-popover').live('click', function (e) {
-                e.preventDefault();
+	var map;
+	function init() {
 
-                $('[rel=popover]').each(function () {
-                    $(this).popover('hide');
-                });
-            });
-
-        });
-
-
-        var map, tiled1, tiled2, tiled3, tiled4, format = 'image/png';
-        var maxOpacity = 0.9;
-        var minOpacity = 0.1;
-
-        var gmap = new OpenLayers.Layer.Google("Google Satellite", {
-            type:google.maps.MapTypeId.SATELLITE,
-            numZoomLevels:25
-        });
-
-        function init() {
-            var atlanta = new OpenLayers.LonLat(-9393381.0503354, 3995908.9838295);
-
-            OpenLayers.ImgPath = "http://atlmaps.com/historicdowntown/images/dark/";
-            options = {
-                controls:[new OpenLayers.Control.Navigation(), new OpenLayers.Control.ArgParser(), new OpenLayers.Control.Attribution(), new OpenLayers.Control.PanZoom()]
-
-            };
-            map = new OpenLayers.Map('map', options);
-            map.addLayer(gmap);
-            gmap.mapObject.setTilt(0);
-
-            tiled1 = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0.6);
-
-            map.addLayer(tiled1);
-
-            map.setCenter(atlanta, 16);
-
-            handleSlider(tiled1, "#mapslider1", "#trans1", 60);
-        }
-    </script>
+	}
+</script>
 
 {% endblock extra_head %}
 
 {% block content %}
 
-    <div id="sidebar" class="span3">
-        <h2>{{ layer.title }}</h2>
+<div id="sidebar" class="">
+	<h2>{{ layer.title }}</h2>
 
-        <p>{{ layer.description }}</p>
+	<p>
+		{{ layer.description }}
+	</p>
 
-        <div>
+	<div>
 
-            <p><span class="btn-group layer1" data-toggle="buttons-radio">
-                        <button type="button" class="btn btn-small on active">
-                            On
-                        </button>
-                        <button type="button" class="btn btn-small off">
-                            Off
-                        </button> </span>
-            </p>
-                <br>
+		<p>
+			<span class="btn-group layer1" data-toggle="buttons-radio">
+				<button type="button" class="btn btn-small on active">
+					On
+				</button>
+				<button type="button" class="btn btn-small off">
+					Off
+				</button> </span>
+		</p>
+		<br>
 
-            <div id='mapslider1' class='slider'></div>
-            <div id="trans1"></div>
-        </div>
-    </div>
+		<div id='mapslider1' class='slider'></div>
+		<div id="trans1"></div>
+	</div>
+</div>
 
-    <div id="map_container" class="span9">
-        <div id="map" class="olMap"></div>
-    </div>
+<!-- <div id="map_container" class="span9"> -->
+<div id="map" class=""></div>
+
+<!-- </div> -->
+<script type="text/javascript">
+	var atlanta = [33.755, -84.39];
+
+	map = L.map('map').setView(atlanta, 15);
+	var ggl = new L.Google();
+	map.addLayer(ggl);
+
+	$(document).ready(function() {
+		var h = $(window).height(), offsetTop = 40;
+		var w = $(window).width(), offsetLeft = 410;
+		$('#map').css('height', (h - offsetTop));
+		$('#sidebar').css('height', (h - offsetTop));
+		$('#map').css('width', (w - offsetLeft));
+		$('#map').css('left', offsetLeft);
+		$('#map').css('bottom', 0)
+		map.invalidateSize(false)
+	});
+
+	$(window).resize(function() {
+		var h = $(window).height(), offsetTop = 40;
+		var w = $(window).width(), offsetLeft = 410;
+		$('#map').css('height', (h - offsetTop));
+		$('#sidebar').css('height', (h - offsetTop));
+		$('#map').css('width', (w - offsetLeft));
+		$('#map').css('left', offsetLeft);
+		$('#map').css('bottom', 0)
+		map.invalidateSize(false)
+	}).resize();
+
+	tiled1 = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0.6);
+	map.addLayer(tiled1);
+	handleSlider(tiled1, "#mapslider1", "#trans1", 60);
+
+</script>
 
 {% endblock content %}

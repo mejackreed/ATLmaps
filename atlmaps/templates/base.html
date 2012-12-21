@@ -1,69 +1,84 @@
 <!doctype html>
 <html>
-<head>
-    <title>ATLmaps: {% block title %}{% endblock %}</title>
+	<head>
+		<title>ATLmaps: {% block title %}{% endblock %}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://openlayers.org/api/theme/default/style.css">
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+		<link rel="stylesheet" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css">
+		<!-- <link rel="stylesheet" href="http://openlayers.org/api/theme/default/style.css"> -->
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css" />
 
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
 
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/atlmaps.js"></script>
-    {% block extra_head %}{% endblock %}
-</head>
-<body onload=init()>
-<div class="container-fluid" id="content-container">
-    <div class="row span12">
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
+		<!-- <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script> -->
+		<script src="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"></script>
+		<!-- <script type = "text/javascript" src="{{ STATIC_URL }}js/Google.js"></script> -->
+		<script type="text/javascript" src="{{ STATIC_URL }}js/atlmaps.js"></script>
+		{% block extra_head %}{% endblock %}
+	</head>
+	<body onload=init()>
+		<div class="container-fluid" id="content-container">
+			<div class="row span12">
 
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="brand" href="/">ATLmaps</a>
-                    <ul class="nav">
-                        <li {% ifequal request.path "/" %} class="active" {% endifequal %}><a href="/">Home</a></li>
-                        <li {% ifequal request.path "/layers/" %} class="active" {% endifequal %}><a rel="nofollow" href="/layers/">Overlays</a></li>
-                        <li {% ifequal request.path "/maps/" %} class="active" {% endifequal %}><a href="/maps/">User Created Maps</a></li>
-                        <li {% ifequal request.path "/map/add/" %} class="active" {% endifequal %}><a href="/map/add/">New Map</a></li>
-                        <li {% ifequal request.path "/about/" %} class="active" {% endifequal %}><a href="/about">About</a></li>
-                    </ul>
-                    <ul class="secondary-nav">
-                        {% if request.user.is_authenticated %}
-                            <li>
+				<nav class="navbar navbar-inverse navbar-fixed-top">
+					<div class="navbar-inner">
+						<div class="container">
+							<a class="brand" href="/">ATLmaps</a>
+							<ul class="nav">
+								<li {% ifequal request.path "/" %} class="active" {% endifequal %}>
+									<a href="/">Home</a>
+								</li>
+								<li {% ifequal request.path "/layers/" %} class="active" {% endifequal %}>
+									<a rel="nofollow" href="/layers/">Overlays</a>
+								</li>
+								<li {% ifequal request.path "/maps/" %} class="active" {% endifequal %}>
+									<a href="/maps/">User Created Maps</a>
+								</li>
+								<li {% ifequal request.path "/map/add/" %} class="active" {% endifequal %}>
+									<a href="/map/add/">New Map</a>
+								</li>
+								<li {% ifequal request.path "/about/" %} class="active" {% endifequal %}>
+									<a href="/about">About</a>
+								</li>
+							</ul>
+							<ul class="secondary-nav">
+								{% if request.user.is_authenticated %}
+								<li>
 
-                                <img class="tiny-avatar" src="{{ request.user.profile.pic_url }}">
-                                {{ request.user.username }}
+									<img class="tiny-avatar" src="{{ request.user.profile.pic_url }}">
+									{{ request.user.username }}
 
-                            </li>
-                            <li>
-                                <a href="/logout">Logout</a>
-                            </li>
-                        {% else %}
-                            <li><a href="/login">Login</a></li>
-                        {% endif %}
+								</li>
+								<li>
+									<a href="/logout">Logout</a>
+								</li>
+								{% else %}
+								<li>
+									<a href="/login">Login</a>
+								</li>
+								{% endif %}
 
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-    <div id="content" class="row-fluid">
-            {% block content %}{% endblock %}
-    </div>
+							</ul>
+						</div>
+					</div>
+				</nav>
+			</div>
+			<div id="content" class="row-fluid">
+				{% block content %}{% endblock %}
+			</div>
 
-        <footer id="footer" class="row">
-            <div class="container">
+			<footer id="footer" class="row">
+				<div class="container">
 
-            </div>
-        </footer>
+				</div>
+			</footer>
 
-    </div>
+		</div>
 
-
-</body>
+	</body>
 </html>

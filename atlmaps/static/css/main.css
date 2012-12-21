@@ -7,16 +7,15 @@ html, body, #content-container, #content{
 }
 
 
-#map_container {
-    position: relative;
-    height: 95%;
+#sidebar{
+	width:410px;
 }
 #map {
-    height:100%;
-    max-width:100%;
-    margin-left:auto;
-    margin-right:auto;
-    position: relative;
+    /*height:100%;
+    max-width:100%;*/
+    /*margin-left:auto;
+    margin-right:auto;*/
+    position: absolute;
     overflow: hidden;
     z-index: 1;
     border: 0;
@@ -31,9 +30,9 @@ html, body, #content-container, #content{
     z-index: 1000;
 }
 
-div.olLayerGooglePoweredBy {
+/*div.olLayerGooglePoweredBy {
     display: none !important;
-}
+}*/
 
 .slider{
     width:150px;
