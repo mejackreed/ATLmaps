@@ -1,4 +1,3 @@
-
 function turnOnLayer(layer, slider, trans) {
 	map.addLayer(layer);
 	if ($(slider).slider("value") == 0) {
@@ -22,7 +21,7 @@ function changeOpacity(byOpacity) {
 	shade.setOpacity(newOpacity);
 }
 
-createLayer = function(name, layer, opacity) {
+function createWMSLayer(name, layer, opacity) {
 	return (new L.tileLayer.wms("http://www.atlmaps.com:8080/geoserver/atlmaps/wms", {
 		layers : layer,
 		format : 'image/png',

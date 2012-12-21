@@ -2,91 +2,118 @@
 
 {% block title %}{{ map.title }} {% endblock title %}
 {% block extra_head %}
-
 <script type="text/javascript">
-$(document).ready(function () {
+	$(document).ready(function () {
 
-$ref = $(".btn-group");
-$("body").on('click', $ref.selector + ' .btn', function () {
-{% for layer in map.layers.all %}
-if ($(this).is('.on, .active')) {
-if ($(this).parent().is('.layer{{ forloop.counter }}')) {
-turnOnLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
-}
-} else {
-if ($(this).is('.off, active')) {
-if ($(this).parent().is('.layer{{ forloop.counter }}')) {
-turnOffLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
-}
-}
-}
-{% endfor %}
-});
+            $ref = $(".btn-group");
+            $("body").on('click', $ref.selector + ' .btn', function () {
+                {% for layer in map.layers.all %}
+                    if ($(this).is('.on, .active')) {
+                        if ($(this).parent().is('.layer{{ forloop.counter }}')) {
+                            turnOnLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
+                        }
+                    } else {
+                        if ($(this).is('.off, active')) {
+                            if ($(this).parent().is('.layer{{ forloop.counter }}')) {
+                                turnOffLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
+                            }
+                        }
+                    }
+                {% endfor %}
+            });
 
-$("[rel=tooltip]").tooltip();
-$("[rel=popover]").popover();
+            $("[rel=tooltip]").tooltip();
+            $("[rel=popover]").popover();
 
-$('.close-popover').live('click', function (e) {
-e.preventDefault();
+            $('.close-popover').live('click', function (e) {
+                e.preventDefault();
 
-$('[rel=popover]').each(function () {
-$(this).popover('hide');
-});
-});
+                $('[rel=popover]').each(function () {
+                    $(this).popover('hide');
+                });
+            });
 
-});
+        });
 
-var map;
+	var map;
+	
+	
 
-function init() {
-
-{% for layer in map.layers.all %}
-tiled{{ forloop.counter }} = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 1);
-map.addLayer(tiled{{ forloop.counter }});
-handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}", tiled{{ forloop.counter }}.opacity*100);
-{% endfor %}
-
-
-}
-</script>
+	function init() {
+		
+		{% for layer in map.layers.all %}
+		    tiled{{ forloop.counter }} = createWMSLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0.6);
+		    map.addLayer(tiled{{ forloop.counter }});
+		    handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}", 60);
+		{% endfor %}
+		
+	}
+	</script>
 
 {% endblock extra_head %}
 
 {% block content %}
 
 <div id="sidebar" class="">
-	<header>
-		<h2>{{ map.title }}</h2>
-	</header>
-	<p>
-		{{ map.description }}
-	</p>
-	<div class="accordion-group" id="#accordion1">
-		{% for layer in map.layers.all %}
-		<div class="accordion-heading">
-			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse{{ forloop.counter }}"> <i class="icon-plus-sign"></i> <i class="icon-minus-sign hide"></i> {{ layer.title }} </a></h4>
-		</div>
-
-		<div id="collapse{{ forloop.counter }}" class="accordion-body collapse in">
-			<div class="pull-left">
-				<span class="btn-group layer{{ forloop.counter }}" data-toggle="buttons-radio">
-					<button type="button" class="btn btn-small on active">
-						On
-					</button>
-					<button type="button" class="btn btn-small off">
-						Off
-					</button> </span>
+	<div class="accordion" id="accordion2">
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne"> <i class="icon-globe"></i> </a>
 			</div>
-			<div id='mapslider{{ forloop.counter }}' class='slider pull-left'></div>
-			<div id="trans{{ forloop.counter }}" class="pull-left"></div>
-
-			<p>
-				{{ layer.description }}
-			</p>
+			<div id="collapseOne" class="accordion-body collapse in">
+				<div class="accordion-inner">
+					<div id="map-title">
+						<h3>{{ map.title }}</h3>
+					</div>
+					<div id="map-description">
+						{{ map.description }}
+					</div>
+				</div>
+			</div>
 		</div>
-
-		{% endfor %}
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo"> <i class="icon-map-marker"></i> </a>
+			</div>
+			<div id="collapseTwo" class="accordion-body collapse">
+				<div class="accordion-inner">
+					<div id="pic1">
+						<!-- <img src="http://www.lorempixel.com/380/240"> -->
+					</div>
+					<div id="pointdescription">
+						Description about the pin point
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree"> <i class="icon-off"></i> </a>
+			</div>
+			<div id="collapseThree" class="accordion-body collapse">
+				<div class="accordion-inner">
+					{% for layer in map.layers.all %}
+					<h4>{{ layer.title }}</h4>
+					<div class="pull-left">
+						<span class="btn-group layer{{ forloop.counter }}" data-toggle="buttons-radio">
+							<button type="button" class="btn btn-small on active">
+								On
+							</button>
+							<button type="button" class="btn btn-small off">
+								Off
+							</button> </span>
+					</div>
+					<div class="">
+						<div id='mapslider{{ forloop.counter }}' class='slider pull-left'></div>&nbsp;
+						<div id="trans{{ forloop.counter }}" class="pull-left"></div>
+					</div>
+					<br>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
 	</div>
+
 </div>
 
 <div id="map" class=""></div>
@@ -119,7 +146,8 @@ handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#tr
 		$('#map').css('bottom', 0)
 		map.invalidateSize(false)
 	}).resize();
-
+	
+	
 
 </script>
 

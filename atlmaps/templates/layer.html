@@ -47,7 +47,7 @@
 
 {% block content %}
 
-<div id="sidebar" class="">
+<div id="sidebar" class="container-fluid">
 	<h2>{{ layer.title }}</h2>
 
 	<p>
@@ -72,10 +72,8 @@
 	</div>
 </div>
 
-<!-- <div id="map_container" class="span9"> -->
 <div id="map" class=""></div>
 
-<!-- </div> -->
 <script type="text/javascript">
 	var atlanta = [33.755, -84.39];
 
@@ -105,7 +103,7 @@
 		map.invalidateSize(false)
 	}).resize();
 
-	tiled1 = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0.6);
+	tiled1 = createWMSLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0.6);
 	map.addLayer(tiled1);
 	handleSlider(tiled1, "#mapslider1", "#trans1", 60);
 

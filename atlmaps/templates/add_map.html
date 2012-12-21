@@ -4,68 +4,68 @@
 {% block extra_head %}
 
 <script type="text/javascript">
-$(document).ready(function () {
+	$(document).ready(function () {
 
-	$ref = $(".btn-group");
-	$("body").on('click', $ref.selector + ' .btn', function () {
-	{% for layer in layers %}
-	if ($(this).is('.on, .active')) {
-	if ($(this).parent().is('.layer{{ forloop.counter }}')) {
-		turnOnLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
-	}
-	} else {
-		if ($(this).is('.off, active')) {
-			if ($(this).parent().is('.layer{{ forloop.counter }}')) {
-				turnOffLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
-			}
-		}
-	}
-	{% endfor %}
-	});
-	
-	$(".accordion-body").on('show',function(event){
-	var heading = $(this).prev();
-	$('i.icon-plus-sign', heading).addClass('hide');
-	$('i.icon-minus-sign', heading).removeClass('hide');
-	});
-	$(".accordion-body").on('hide',function(event){
-	var heading = $(this).prev();
-	$('i.icon-plus-sign', heading).removeClass('hide');
-	$('i.icon-minus-sign', heading).addClass('hide');
-	});
-	
-	$(".addMap").on('click', function(event){
-	var layerId = $(this).attr('data');
-	var num =  $('input[name="layers"]').length;
-	$('form#layermash ').append("<input type='hidden' name='layers' value='"+layerId+"' id='id_layers_"+num+"' />");
-	});
-	
-	$('#mashit').on('mousedown', function(){
-	var lat = map.getCenter().lat;
-	var lng = map.getCenter().lon;
-	$("#id_center_lat").attr('value',lat);
-	$("#id_center_lng").attr('value',lng);
-	});
-	
-	//<input type="hidden" name="layers" value="1" id="id_layers_0">
-	//<input type="text" name="center_lat" id="id_center_lat">
-	
-	$("[rel=tooltip]").tooltip();
-	$("[rel=popover]").popover();
-	
-	$('.close-popover').live('click', function (e) {
-		e.preventDefault();
-		$('[rel=popover]').each(function () {
-			$(this).popover('hide');
+		$ref = $(".btn-group");
+		$("body").on('click', $ref.selector + ' .btn', function () {
+			{% for layer in layers %}
+			if ($(this).is('.on, .active')) {
+				if ($(this).parent().is('.layer{{ forloop.counter }}')) {
+					turnOnLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
+				}
+				} else {
+					if ($(this).is('.off, active')) {
+						if ($(this).parent().is('.layer{{ forloop.counter }}')) {
+							turnOffLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
+						}
+					}
+				}
+			{% endfor %}
 		});
-	});
+	
+		$(".accordion-body").on('show',function(event){
+			var heading = $(this).prev();
+			$('i.icon-plus-sign', heading).addClass('hide');
+			$('i.icon-minus-sign', heading).removeClass('hide');
+		});
+		$(".accordion-body").on('hide',function(event){
+			var heading = $(this).prev();
+			$('i.icon-plus-sign', heading).removeClass('hide');
+			$('i.icon-minus-sign', heading).addClass('hide');
+		});
+		
+		$(".addMap").on('click', function(event){
+			var layerId = $(this).attr('data');
+			var num =  $('input[name="layers"]').length;
+			$('form#layermash ').append("<input type='hidden' name='layers' value='"+layerId+"' id='id_layers_"+num+"' />");
+		});
+		
+		$('#mashit').on('mousedown', function(){
+			var lat = map.getCenter().lat;
+			var lng = map.getCenter().lon;
+			$("#id_center_lat").attr('value',lat);
+			$("#id_center_lng").attr('value',lng);
+		});
+		
+		//<input type="hidden" name="layers" value="1" id="id_layers_0">
+		//<input type="text" name="center_lat" id="id_center_lat">
+		
+		$("[rel=tooltip]").tooltip();
+		$("[rel=popover]").popover();
+		
+		$('.close-popover').live('click', function (e) {
+			e.preventDefault();
+			$('[rel=popover]').each(function () {
+				$(this).popover('hide');
+			});
+		});
 });
 
 
 function init() {
 
 {% for layer in layers %}
-tiled{{ forloop.counter }} = createLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0);
+tiled{{ forloop.counter }} = createWMSLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0);
 map.addLayer(tiled{{ forloop.counter }});
 handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}", 0);
 {% endfor %}
@@ -78,7 +78,7 @@ handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#tr
 
 {% block content %}
 
-<div id="sidebar" class="">
+<div id="sidebar" class="container-fluid">
 	<form id="layermash" action="" method="POST">
 		{% csrf_token %}
 		<fieldset>
