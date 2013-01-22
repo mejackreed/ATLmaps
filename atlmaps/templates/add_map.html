@@ -8,7 +8,7 @@
 
 		$ref = $(".btn-group");
 		$("body").on('click', $ref.selector + ' .btn', function () {
-			{% for layer in layers %}
+			{% for wmslayer in wmslayers %}
 			if ($(this).is('.on, .active')) {
 				if ($(this).parent().is('.layer{{ forloop.counter }}')) {
 					turnOnLayer(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}")
@@ -64,8 +64,8 @@
 
 function init() {
 
-{% for layer in layers %}
-tiled{{ forloop.counter }} = createWMSLayer('{{ layer.title }}', '{{ layer.wms_layer_name }}', 0);
+{% for wmslayer in wmslayers %}
+tiled{{ forloop.counter }} = createWMSLayer('{{ wmslayer.title }}', '{{ wmslayer.wms_layer_name }}', 0);
 map.addLayer(tiled{{ forloop.counter }});
 handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#trans{{ forloop.counter }}", 0);
 {% endfor %}
@@ -84,35 +84,40 @@ handleSlider(tiled{{ forloop.counter }}, "#mapslider{{ forloop.counter }}", "#tr
 		<fieldset>
 			{{ form.as_p }}
 		</fieldset>
-		<input type="submit" value="Save This Map"  id="mashit" class="btn-large" />
+		<input type="submit" value="Save This Map"  id="mashit" class="btn" />
 	</form>
 
 	<div class="accordion-group" id="#accordion1">
-		{% for layer in layers %}
+		{% for wmslayer in wmslayers %}
 		<div class="accordion-heading">
-			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse{{ forloop.counter }}"> <i class="icon-plus-sign"></i> <i class="icon-minus-sign hide"></i> {{ layer.title }} </a></h4>
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse{{ forloop.counter }}"> <i class="icon-plus-sign"></i> <i class="icon-minus-sign hide"></i> {{ wmslayer.title }} </a></h4>
 		</div>
 
 		<div id="collapse{{ forloop.counter }}" class="accordion-body collapse">
-			<div class="pull-left">
-				<span class="btn-group layer{{ forloop.counter }}" data-toggle="buttons-radio">
-					<button type="button" class="btn btn-small on active">
-						On
+			<div class="layer-info">
+				<div class="pull-left">
+					<span class="btn-group layer{{ forloop.counter }}" data-toggle="buttons-radio">
+						<button type="button" class="btn btn-small on active">
+							On
+						</button>
+						<button type="button" class="btn btn-small off">
+							Off
+						</button>
+					</span>
+				</div>
+				<div id='mapslider{{ forloop.counter }}' class='slider pull-left'></div>
+				<div id="trans{{ forloop.counter }}" class="pull-left"></div>
+				<div class="pull-right">
+					<button class="addMap  btn btn-small" data="{{ wmslayer.id }}">
+						Add to my map
 					</button>
-					<button type="button" class="btn btn-small off">
-						Off
-					</button> </span>
+				</div>
+				<br>
+				<br>
+				<p class="pull-left">
+					{{ wmslayer.description }}
+				</p>
 			</div>
-			<div id='mapslider{{ forloop.counter }}' class='slider pull-left'></div>
-			<div id="trans{{ forloop.counter }}" class="pull-left"></div>
-			<div class="pull-right">
-				<button class="addMap btn-small" data="{{ layer.id }}">
-					Add to my map
-				</button>
-			</div>
-			<p>
-				{{ layer.description }}
-			</p>
 		</div>
 
 		{% endfor %}

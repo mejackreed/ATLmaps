@@ -7,7 +7,8 @@ class LayerAdmin(admin.ModelAdmin):
     fieldsets = [ (None,{'fields': ['wms_url', 'wms_layer_name']}),]
 
 
-admin.site.register(Layer, LayerAdmin)
+admin.site.register(WMSLayer)
+admin.site.register(DataLayer)
 admin.site.register(Map)
 admin.site.register(wmsEndpoint)
 

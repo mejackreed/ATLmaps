@@ -9,6 +9,8 @@ admin.autodiscover()
 urlpatterns = patterns('layermash.views',
     url(r'^$','home'),
     url(r'^layer/(?P<layer_id>\d+)/$', 'layer'),
+    url(r'^wmslayer/(?P<layer_id>\d+)/$', 'wmslayer'),
+    url(r'^datalayer/(?P<layer_id>\d+)/$', 'datalayer'),
     url(r'^layers/$', ListView.as_view(
         model=Layer, template_name='layers.html'
     )),

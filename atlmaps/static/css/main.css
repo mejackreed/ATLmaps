@@ -7,8 +7,9 @@ html, body, #content-container, #content {
 }
 
 #sidebar {
-	width: 410px;
+	width: 400px;
 	margin-left: 0px;
+	padding: 20px;
 }
 #map {
 	position: absolute;
@@ -41,4 +42,6 @@ img {
 .accordion-group {
 	border: 0px;
 }
-
+.layer-info{
+	width:380px;
+}

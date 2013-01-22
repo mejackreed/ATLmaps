@@ -10,6 +10,15 @@ def layer(request, layer_id):
     layer = Layer.objects.get(pk=layer_id)
     return render_to_response('layer.html',{'layer': layer}, context_instance=RequestContext(request))
 
+def wmslayer(request, layer_id):
+  if request.method == 'GET':
+    layer = WMSLayer.objects.get(pk=layer_id)
+    return render_to_response('layer.html',{'layer': layer}, context_instance=RequestContext(request))
+
+def jsonlayer(request, layer_id):
+  if request.method == 'GET':
+    layer = JSONLayer.objects.get(pk=layer_id)
+    return render_to_response('layer.html',{'layer': layer}, context_instance=RequestContext(request))
 
 def map(request, map_id):
     if request.method == 'GET':
@@ -18,9 +27,10 @@ def map(request, map_id):
 
 def add_map(request):
     if request.method == 'GET':
-        layers = Layer.objects.all()
+        wmslayers = WMSLayer.objects.all()
+        jsonlayers = JSONLayer.objects.all()
         form = MapForm(initial={})
-        return render_to_response('add_map.html',{'layers' : layers, 'form': form}, context_instance = RequestContext(request))
+        return render_to_response('add_map.html',{'wmslayers' : wmslayers, 'jsonlayers' : jsonlayers, 'form': form}, context_instance = RequestContext(request))
 
     if request.method == "POST":
         form = MapForm(request.POST)
@@ -31,15 +41,15 @@ def add_map(request):
             center_lng  = form.cleaned_data['center_lng']
             layers      = form.cleaned_data['layers']
         else:
-            layers = Layer.objects.all()
+            layers = WMSLayer.objects.all()
             return render_to_response('add_map.html',{'layers' : layers, 'form': form}, context_instance = RequestContext(request))
-
+        
         map = Map(title=title, description=description, center_lat=center_lat, center_lng=center_lng)
         map.save()
 
-        for layer in layers:
-            map.layers.add(layer)
-
+        for wmslayer in wmslayers:
+            map.wmslayers.add(wmslayer)
+        
         map.save()
 
         return HttpResponseRedirect('/map/' + str(map.id))
